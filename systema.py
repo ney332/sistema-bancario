@@ -44,6 +44,23 @@ class ContaBancaria:
         self.extrato.append(f'Saque: -R$ {valor:.2f}')
         print(f'\nSaque de R$ {valor:.2f} realizado com sucesso!')
 
+    def investimento(self, valor, meses, taxa_juros=0.01):
+        """Investe um valor com juros compostos mensais."""
+        if valor <= 0:
+            print("\nErro: O valor do investimento deve ser positivo.")
+            return
+        if self.saldo < valor:
+            print("\nErro: Saldo insuficiente para investir.")
+            return
+        
+        self.saldo -= valor
+        montante = valor * ((1 + taxa_juros) ** meses)
+        lucro = montante - valor
+        self.saldo += montante
+        self.extrato.append(f'Investimento: +R$ {lucro:.2f} (após {meses} meses)')
+        print(f"\nInvestimento de R$ {valor:.2f} realizado por {meses} meses.")
+        print(f"Lucro obtido: R$ {lucro:.2f} (Taxa: {taxa_juros*100:.2f}% ao mês)")
+
     def ver_extrato(self):
         print(f'\n=== Extrato Bancário ===')
         print(f'Cliente: {self.usuario.nome} (CPF: {self.usuario.cpf})')
@@ -61,7 +78,6 @@ class ContaBancaria:
         print('=' * 30)
 
 def main():
-    # Cadastro do usuário
     print('=== Bem-vindo ao Banco Python ===')
     nome = input('Digite seu nome: ')
     cpf = input('Digite seu CPF (somente números): ')
@@ -74,7 +90,8 @@ def main():
         print('1. Depósito')
         print('2. Saque')
         print('3. Extrato')
-        print('4. Sair')
+        print('4. Investimento')
+        print('5. Sair')
         
         opcao = input('\nEscolha uma opção: ')
         
@@ -94,8 +111,16 @@ def main():
                 
         elif opcao == '3':
             conta.ver_extrato()
-            
+        
         elif opcao == '4':
+            try:
+                valor = float(input('Valor a investir: R$ '))
+                meses = int(input('Quantidade de meses: '))
+                conta.investimento(valor, meses)
+            except ValueError:
+                print('Erro: Digite números válidos para valor e meses.')
+            
+        elif opcao == '5':
             print('\nObrigado por usar nossos serviços. Até logo!')
             break
             
